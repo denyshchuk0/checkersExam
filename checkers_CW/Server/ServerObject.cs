@@ -47,14 +47,14 @@ namespace Server
                 Disconnect();
             }
         }
-        protected internal void BroadcastData(object message, string id)
+        protected internal void BroadcastData(string message, string id)
         {
-            byte[] data = message as byte[];
+            var data = message;
             for (int i = 0; i < clients.Count; i++)
             {
                 if (clients[i].Id != id)
                 {
-                    clients[i].Stream.Write(data, 0, data.Length);
+                    clients[i].Stream.Write(Encoding.UTF8.GetBytes(data), 0, data.Length);
                 }
             }
         }
