@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
+using System.Security.AccessControl;
+using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -13,6 +17,11 @@ namespace GameClient
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const string host = "127.0.0.1";
+        private const int port = 8888;
+        static TcpClient client;
+        static NetworkStream stream;
+        
         string colorTeamOne = "#FFFFFFFF";
         string colorTeamTwo = "#FF000000";
         bool whatTeam = true;
@@ -21,12 +30,29 @@ namespace GameClient
         List<Shashka> teamOne = new List<Shashka>();
         List<Shashka> teamTwo = new List<Shashka>();
         UIElementCollection item;
+
         //ств ліст батонів для змешнення коду в подальшій праці з ними
         List<Button> listButtons;
         Shashka tempBut = new Shashka();
         Shashka obj = new Shashka();
+
+        static Shashka tempEnimyBE = new Shashka();
+        static Shashka tempEnimyAF = new Shashka();
         public MainWindow()
         {
+            client = new TcpClient();
+            try
+            {
+                client.Connect(host, port); //подключение клиента
+                stream = client.GetStream(); // получаем поток
+                // запускаем новый поток для получения данных
+                Thread receiveThread = new Thread(new ThreadStart(ReceiveData));
+                receiveThread.Start(); //старт потока
+            }
+            catch (Exception ex)
+            {
+            
+            }
             InitializeComponent();
             item = this.Doska.Children;
             listButtons = new List<Button>();
@@ -55,6 +81,36 @@ namespace GameClient
             RefreshXY(teamOne);
             RefreshXY(teamTwo);
         }
+        void ReceiveData()
+        {
+            while (true)
+            {
+                //  try
+                {
+                    byte[] data = new byte[64]; // буфер для получаемых данных
+                    StringBuilder builder = new StringBuilder();
+                    int bytes = 0;
+                    do
+                    {
+                        bytes = stream.Read(data, 0, data.Length);
+                        builder.Append(Encoding.UTF8.GetString(data, 0, bytes));
+                    }
+                    while (stream.DataAvailable);
+
+                    string message = builder.ToString();
+                    int x = Convert.ToInt32(message[0].ToString());
+                    int y = Convert.ToInt32(message[1].ToString()); 
+                    int z = Convert.ToInt32(message[2].ToString());
+                    int a = Convert.ToInt32(message[3].ToString());
+                    tempEnimyBE.X = x;
+                    tempEnimyBE.Y = y; 
+                    tempEnimyAF.X = z;
+                    tempEnimyAF.Y = a;
+                   
+                }
+            }
+        //    catch { Disconnect(); }
+        }
         private void RefreshXY(List<Shashka> shashkas)
         {
             for (int i = 0; i < shashkas.Count; i++)
@@ -78,6 +134,7 @@ namespace GameClient
                 Turn(teamOne, button, colorTeamTwo, teamTwo);
             else if (!whatTeam)
                 Turn(teamTwo, button, colorTeamOne, teamOne);
+
         }
 
         void Turn(List<Shashka> team, Button button, string colorEnemi, List<Shashka> Enemi)
@@ -97,7 +154,7 @@ namespace GameClient
                         isUseButt = button.Name;
                         tempBut.X = Convert.ToInt32(button.Name[1].ToString());
                         tempBut.Y = Convert.ToInt32(button.Name[2].ToString());
-
+                        SendData();
                     }
                     //якщо вибрана то знімаємо рамку 
                     else
@@ -170,10 +227,10 @@ namespace GameClient
             else if (tempBut.Y - y < 8 && tempBut.Y - y >= 0 && tempBut.X - x < 8 && tempBut.X - x >= 0)
                 return listButtons.Where(j => j.Name == "P" + (tempBut.X - x).ToString() + (tempBut.Y - y).ToString()).FirstOrDefault();
 
-            var bc = new BrushConverter();
             Button button = new Button() { Content = new Ellipse() { Stroke = (Brush)bc.ConvertFrom("#A9A9A9") } };
             return button;
         }
+        BrushConverter bc = new BrushConverter();
         void ForStart(Button button, List<Shashka> team)
         {
             try
@@ -193,11 +250,59 @@ namespace GameClient
 
                 isUseButt = "";
                 if (whatTeam)
-                    whatTeam = false;
+                {
+                    SendData();
+                    listButtons.Where(j => j.Name == "P" + (tempEnimyBE.X).ToString() + (tempEnimyBE.Y).ToString()).FirstOrDefault().Content=null;
+                    teamTwo.Where(x => x.X == tempEnimyBE.X && x.Y == tempEnimyBE.Y).FirstOrDefault().X = tempEnimyAF.X;
+                    teamTwo.Where(x => x.X == tempEnimyBE.X && x.Y == tempEnimyBE.Y).FirstOrDefault().Y = tempEnimyAF.Y;
+                    listButtons.Where(j => j.Name == "P" + (tempEnimyAF.X).ToString() + (tempEnimyAF.Y).ToString()).FirstOrDefault().Content = new Ellipse() {Stroke= (Brush)bc.ConvertFrom("#FFFFFFFF") };
+                    
+                    RefreshXY(teamOne);
+                    RefreshXY(teamTwo);
+                   
+                }
                 else
-                    whatTeam = true;
+                {
+                    SendData();
+                    listButtons.Where(j => j.Name == "P" + (tempEnimyBE.X).ToString() + (tempEnimyBE.Y).ToString()).FirstOrDefault().Content = null;
+                    teamOne.Where(x => x.X == tempEnimyBE.X && x.Y == tempEnimyBE.Y).FirstOrDefault().X = tempEnimyAF.X;
+                    teamOne.Where(x => x.X == tempEnimyBE.X && x.Y == tempEnimyBE.Y).FirstOrDefault().Y = tempEnimyAF.Y;
+                    listButtons.Where(j => j.Name == "P" + (tempEnimyAF.X).ToString() + (tempEnimyAF.Y).ToString()).FirstOrDefault().Content = new Ellipse() { Stroke = (Brush)bc.ConvertFrom("#FF000000") };
+
+                    RefreshXY(teamOne);
+                    RefreshXY(teamTwo);
+                }
             }
             catch { }
+        }
+        string cord = "";
+        private void SendData()
+        {
+          
+             cord += tempBut.X.ToString()+ tempBut.Y.ToString(); //////cord
+            if (cord.Length==4) {
+                byte[] data = Encoding.Unicode.GetBytes(cord);
+                stream.Write(data, 0, data.Length);
+                cord = "";
+            }
+        }
+        void Disconnect()
+        {
+            if (stream != null)
+                stream.Close();//отключение потока
+            if (client != null)
+                client.Close();//отключение клиента
+            Environment.Exit(0); //завершение процесса
+        }
+
+        private void Button_Click_white(object sender, RoutedEventArgs e)
+        {
+            whatTeam = true;
+        }
+
+        private void Button_Click_black(object sender, RoutedEventArgs e)
+        {
+            whatTeam = false;
         }
     }
 }

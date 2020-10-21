@@ -22,6 +22,7 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
@@ -82,5 +83,7 @@
         <Button Grid.Row="7" Grid.Column="5"  Style="{StaticResource ButtonState}"></Button>
         <Button Grid.Row="7" Grid.Column="7"  Style="{StaticResource ButtonState}"></Button>
 
+        <Button Grid.Column="8" Click="Button_Click_white">white</Button>
+        <Button Grid.Column="8" Grid.Row="1" Click="Button_Click_black">black</Button>
     </Grid>
 </Window>
