@@ -39,7 +39,7 @@ namespace Server
                     try
                     {
                         message = GetData();
-                        message = String.Format("{0}:", message);
+                        message = String.Format( message);
                         Console.WriteLine(message);
                         server.BroadcastData(message, this.Id);
                     }
