@@ -24,7 +24,7 @@ namespace GameClient
         
         string colorTeamOne = "#FFFFFFFF";
         string colorTeamTwo = "#FF000000";
-        bool whatTeam = true;
+        static bool whatTeam = true;
 
         string isUseButt = "";
         List<Shashka> teamOne = new List<Shashka>();
@@ -38,6 +38,11 @@ namespace GameClient
 
         static Shashka tempEnimyBE = new Shashka();
         static Shashka tempEnimyAF = new Shashka();
+        static Shashka tempEnimyBEBlack = new Shashka();
+        static Shashka tempEnimyAFBlack = new Shashka();
+
+        static string tempEnimyDELET ="";
+        static string message="";
         public MainWindow()
         {
             client = new TcpClient();
@@ -97,16 +102,45 @@ namespace GameClient
                     }
                     while (stream.DataAvailable);
 
-                    string message = builder.ToString();
-                    int x = Convert.ToInt32(message[0].ToString());
-                    int y = Convert.ToInt32(message[1].ToString()); 
-                    int z = Convert.ToInt32(message[2].ToString());
-                    int a = Convert.ToInt32(message[3].ToString());
-                    tempEnimyBE.X = x;
-                    tempEnimyBE.Y = y; 
-                    tempEnimyAF.X = z;
-                    tempEnimyAF.Y = a;
-                   
+                     message = builder.ToString();
+                        int x = Convert.ToInt32(message[0].ToString());
+                        int y = Convert.ToInt32(message[1].ToString());
+                        int z = Convert.ToInt32(message[2].ToString());
+                        int a = Convert.ToInt32(message[3].ToString());
+                  //  if(message.Length==6)
+                  //      tempEnimyDELET = message[4].ToString() + message[5].ToString();
+
+                    if (whatTeam) {
+                        tempEnimyBEBlack.X = x;
+                        tempEnimyBEBlack.Y = y;
+                        tempEnimyAFBlack.X = z;
+                        tempEnimyAFBlack.Y = a;
+                        if (message.Length == 6)
+                        {
+                            //Dispatcher.Invoke(()=>teamTwo.Remove(teamTwo.Where(i => i.X == Convert.ToInt32(message[4].ToString()) && i.Y == Convert.ToInt32(message[5].ToString())).FirstOrDefault()));
+                            //Dispatcher.Invoke(() =>FindMtBut(0,0,false).Content=null);
+                            Dispatcher.Invoke(() => EnemiTurn(whatTeam, 6, Convert.ToInt32(message[4].ToString()), Convert.ToInt32(message[5].ToString())));
+                        }
+                        else
+                        Dispatcher.Invoke(()=> EnemiTurn(whatTeam,4,0,0));
+
+                    }
+                    else
+                    {
+                        tempEnimyBE.X = x;
+                        tempEnimyBE.Y = y;
+                        tempEnimyAF.X = z;
+                        tempEnimyAF.Y = a;
+                        if (message.Length == 6)
+                        {
+                            //Dispatcher.Invoke(()=>teamOne.Remove(teamOne.Where(i => i.X == Convert.ToInt32(message[4].ToString()) && i.Y == Convert.ToInt32(message[5].ToString())).FirstOrDefault()));
+                            //Dispatcher.Invoke(() => FindMtBut(0, 0, true).Content = null);
+                            Dispatcher.Invoke(() => EnemiTurn(whatTeam, 6, Convert.ToInt32(message[4].ToString()), Convert.ToInt32(message[5].ToString())));
+                        }
+                        else
+                            Dispatcher.Invoke(() => EnemiTurn(whatTeam,4,0,0));
+                    }
+                    tempEnimyDELET = "";
                 }
             }
         //    catch { Disconnect(); }
@@ -131,9 +165,15 @@ namespace GameClient
         {
             Button button = (sender as Button);
             if (whatTeam)
-                Turn(teamOne, button, colorTeamTwo, teamTwo);
+                if (tempEnimyBEBlack.X != 100 && tempEnimyBEBlack.Y != 100 && tempEnimyAFBlack.X != 100 && tempEnimyAFBlack.Y != 100)
+                    Turn(teamOne, button, colorTeamTwo, teamTwo);
+                else
+                    Title = "Waite Black turn";
             else if (!whatTeam)
-                Turn(teamTwo, button, colorTeamOne, teamOne);
+                if (tempEnimyBE.X != 100 && tempEnimyBE.Y != 100 && tempEnimyAF.X != 100 && tempEnimyAF.Y != 100)
+                    Turn(teamTwo, button, colorTeamOne, teamOne);
+                else
+                    Title = "Waite White turn";
 
         }
 
@@ -154,7 +194,6 @@ namespace GameClient
                         isUseButt = button.Name;
                         tempBut.X = Convert.ToInt32(button.Name[1].ToString());
                         tempBut.Y = Convert.ToInt32(button.Name[2].ToString());
-                        SendData();
                     }
                     //якщо вибрана то знімаємо рамку 
                     else
@@ -168,6 +207,7 @@ namespace GameClient
                 //перевіряємо чи там не має іншої шашки + перевіряємо чи бажаний хід є в зоні обмеження 
                 else
                 {
+                     SendData();
                     if (Umova(button, 1, 1, whatTeam) && button.Content == null || Umova(button, 1, -1, whatTeam) && button.Content == null)
                     {
                         //повертаємо попередній кнопці тег "не використовується" і обнуляємо
@@ -183,18 +223,79 @@ namespace GameClient
                             if (Umova(button, 2, 2, whatTeam)
                                && button.Content == null)
                             {
-                                ForStart(button, team);
+                               // ForStart(FindMtBut(1, 1, whatTeam), team);
+                                FindMtBut(1, 1, whatTeam).Content = null;
+                                FindMtBut(0, 0, whatTeam).BorderBrush = null;
+                                FindMtBut(0, 0, whatTeam).BorderThickness = new Thickness(0.0);
+                                FindMtBut(0, 0, whatTeam).Tag = "unuse";
 
-                                listButtons.Where(x => Umova(x, 1, 1, whatTeam)).FirstOrDefault().Content = null;
-                                Enemi.Remove(Enemi.Where(x => x.X == Convert.ToInt32(listButtons.Where(u => Umova(u, 1, 1, whatTeam)).FirstOrDefault().Name[1].ToString()) && x.Y == Convert.ToInt32(listButtons.Where(u => Umova(u, 1, 1, whatTeam)).FirstOrDefault().Name[2].ToString())).FirstOrDefault());
+                                tempEnimyDELET = FindMtBut(1, 1, whatTeam).Name[1].ToString() + FindMtBut(1, 1, whatTeam).Name[2].ToString();
+                                Enemi.Remove(Enemi.Where(x=>x.X == Convert.ToInt32(FindMtBut(1, 1, whatTeam).Name[1].ToString()) && x.Y== Convert.ToInt32(FindMtBut(1, 1, whatTeam).Name[2].ToString())).FirstOrDefault());
+                                FindMtBut(2, 2, whatTeam).Content = FindMtBut(0, 0, whatTeam).Content;
+
+                                tempBut.X = Convert.ToInt32(button.Name[1].ToString());
+                                tempBut.Y = Convert.ToInt32(button.Name[2].ToString());
+                                if (whatTeam)
+                                {
+                                    SendData();
+
+                                    Title = "White go";
+                                    tempEnimyBEBlack.X = 100;
+                                    tempEnimyBEBlack.Y = 100;
+                                    tempEnimyAFBlack.X = 100;
+                                    tempEnimyAFBlack.Y = 100;
+                                }
+                                else
+                                {
+                                    SendData();
+
+                                    Title = "Black go";
+                                    tempEnimyBE.X = 100;
+                                    tempEnimyBE.Y = 100;
+                                    tempEnimyAF.X = 100;
+                                    tempEnimyAF.Y = 100;
+                                }
+                                //listButtons.Where(x => Umova(x, 1, 1, whatTeam)).FirstOrDefault().Content = null;
+                                //  Enemi.Remove(Enemi.Where(x => x.X == Convert.ToInt32(listButtons.Where(u => Umova(u, 1, 1, whatTeam)).FirstOrDefault().Name[1].ToString()) && x.Y == Convert.ToInt32(listButtons.Where(u => Umova(u, 1, 1, whatTeam)).FirstOrDefault().Name[2].ToString())).FirstOrDefault());
                             }
                             else if (Umova(button, 2, -2, whatTeam)
                             && button.Content == null)
                             {
-                                ForStart(button, team);
+                                // ForStart(FindMtBut(1, -1, whatTeam), team);
+                                FindMtBut(1, -1, whatTeam).Content = null;
+                                FindMtBut(0, 0, whatTeam).BorderBrush = null;
+                                FindMtBut(0, 0, whatTeam).BorderThickness = new Thickness(0.0);
+                                FindMtBut(0, 0, whatTeam).Tag = "unuse";
 
-                                listButtons.Where(x => Umova(x, 1, -1, whatTeam)).FirstOrDefault().Content = null;
-                                Enemi.Remove(Enemi.Where(x => x.X == Convert.ToInt32(listButtons.Where(u => Umova(u, 1, -1, whatTeam)).FirstOrDefault().Name[1].ToString()) && x.Y == Convert.ToInt32(listButtons.Where(u => Umova(u, 1, -1, whatTeam)).FirstOrDefault().Name[2].ToString())).FirstOrDefault());
+                                tempEnimyDELET = FindMtBut(1, -1, whatTeam).Name[1].ToString() + FindMtBut(1, -1, whatTeam).Name[2].ToString();
+                                Enemi.Remove(Enemi.Where(x => x.X == Convert.ToInt32(FindMtBut(1, -1, whatTeam).Name[1].ToString()) && x.Y == Convert.ToInt32(FindMtBut(1, -1, whatTeam).Name[2].ToString())).FirstOrDefault());
+                                FindMtBut(2, -2, whatTeam).Content = FindMtBut(0, 0, whatTeam).Content;
+
+                                tempBut.X = Convert.ToInt32(button.Name[1].ToString());
+                                tempBut.Y = Convert.ToInt32(button.Name[2].ToString());
+                                isUseButt = "";
+                                if (whatTeam)
+                                {
+                                    SendData();
+                                   
+                                    Title = "White go";
+                                    tempEnimyBEBlack.X = 100;
+                                    tempEnimyBEBlack.Y = 100;
+                                    tempEnimyAFBlack.X = 100;
+                                    tempEnimyAFBlack.Y = 100;
+                                }
+                                else
+                                {
+                                    SendData();
+                              
+                                    Title = "Black go";
+                                    tempEnimyBE.X = 100;
+                                    tempEnimyBE.Y = 100;
+                                    tempEnimyAF.X = 100;
+                                    tempEnimyAF.Y = 100;
+                                }
+                               // listButtons.Where(x => Umova(x, 1, -1, whatTeam)).FirstOrDefault().Content = null;
+                                // Enemi.Remove(Enemi.Where(x => x.X == Convert.ToInt32(listButtons.Where(u => Umova(u, 1, -1, whatTeam)).FirstOrDefault().Name[1].ToString()) && x.Y == Convert.ToInt32(listButtons.Where(u => Umova(u, 1, -1, whatTeam)).FirstOrDefault().Name[2].ToString())).FirstOrDefault());
                             }
                         }
                     }
@@ -231,6 +332,8 @@ namespace GameClient
             return button;
         }
         BrushConverter bc = new BrushConverter();
+        Shashka shashka1 = new Shashka();
+        Shashka shashka2 = new Shashka();
         void ForStart(Button button, List<Shashka> team)
         {
             try
@@ -252,38 +355,108 @@ namespace GameClient
                 if (whatTeam)
                 {
                     SendData();
-                    listButtons.Where(j => j.Name == "P" + (tempEnimyBE.X).ToString() + (tempEnimyBE.Y).ToString()).FirstOrDefault().Content=null;
-                    teamTwo.Where(x => x.X == tempEnimyBE.X && x.Y == tempEnimyBE.Y).FirstOrDefault().X = tempEnimyAF.X;
-                    teamTwo.Where(x => x.X == tempEnimyBE.X && x.Y == tempEnimyBE.Y).FirstOrDefault().Y = tempEnimyAF.Y;
-                    listButtons.Where(j => j.Name == "P" + (tempEnimyAF.X).ToString() + (tempEnimyAF.Y).ToString()).FirstOrDefault().Content = new Ellipse() {Stroke= (Brush)bc.ConvertFrom("#FFFFFFFF") };
-                    
-                    RefreshXY(teamOne);
-                    RefreshXY(teamTwo);
-                   
+                    //if (message.Length==4 )
+                    //{ 
+                    //listButtons.Where(j => j.Name == "P" + (tempEnimyBEBlack.X).ToString() + (tempEnimyBEBlack.Y).ToString()).FirstOrDefault().Content = null;
+                    //listButtons.Where(j => j.Name == "P" + (tempEnimyAFBlack.X).ToString() + (tempEnimyAFBlack.Y).ToString()).FirstOrDefault().Content = new Ellipse() { Stroke = (Brush)bc.ConvertFrom("#FFFFFFFF") };
+                    //    shashka1 = teamTwo.Where(x => x.X == tempEnimyBEBlack.X && x.Y == tempEnimyBEBlack.Y).FirstOrDefault();
+                    //    shashka1.X = tempEnimyAFBlack.X;
+                    //    shashka1.Y = tempEnimyAFBlack.Y;
+                    //    //teamTwo.Where(x => x.X == tempEnimyBEBlack.X && x.Y == tempEnimyBEBlack.Y).FirstOrDefault().X = tempEnimyAFBlack.X;
+                    //    //teamTwo.Where(x => x.X == tempEnimyBEBlack.X && x.Y == tempEnimyBEBlack.Y).FirstOrDefault().Y = tempEnimyAFBlack.Y;
+                    //    RefreshXY(teamOne);
+                    //RefreshXY(teamTwo);
+                    //message = "";
+                    //}
+                        Title = "White go";
+                        tempEnimyBEBlack.X = 100;
+                        tempEnimyBEBlack.Y = 100;
+                        tempEnimyAFBlack.X = 100;
+                        tempEnimyAFBlack.Y = 100;
+
+
                 }
                 else
                 {
-                    SendData();
-                    listButtons.Where(j => j.Name == "P" + (tempEnimyBE.X).ToString() + (tempEnimyBE.Y).ToString()).FirstOrDefault().Content = null;
-                    teamOne.Where(x => x.X == tempEnimyBE.X && x.Y == tempEnimyBE.Y).FirstOrDefault().X = tempEnimyAF.X;
-                    teamOne.Where(x => x.X == tempEnimyBE.X && x.Y == tempEnimyBE.Y).FirstOrDefault().Y = tempEnimyAF.Y;
-                    listButtons.Where(j => j.Name == "P" + (tempEnimyAF.X).ToString() + (tempEnimyAF.Y).ToString()).FirstOrDefault().Content = new Ellipse() { Stroke = (Brush)bc.ConvertFrom("#FF000000") };
-
-                    RefreshXY(teamOne);
-                    RefreshXY(teamTwo);
+                        SendData();
+                    //if (message.Length == 4 )
+                    //{
+                    //    listButtons.Where(j => j.Name == "P" + (tempEnimyBE.X).ToString() + (tempEnimyBE.Y).ToString()).FirstOrDefault().Content = null;
+                    //    listButtons.Where(j => j.Name == "P" + (tempEnimyAF.X).ToString() + (tempEnimyAF.Y).ToString()).FirstOrDefault().Content = new Ellipse() { Stroke = (Brush)bc.ConvertFrom("#FF000000") };
+                    //    shashka2 = teamOne.Where(x => x.X == tempEnimyBE.X && x.Y == tempEnimyBE.Y).FirstOrDefault();
+                    //    shashka2.X = tempEnimyAF.X;
+                    //    shashka2.Y = tempEnimyAF.Y;
+                    //    //teamOne.Where(x => x.X == tempEnimyBE.X && x.Y == tempEnimyBE.Y).FirstOrDefault().X = tempEnimyAF.X;
+                    //    //teamOne.Where(x => x.X == tempEnimyBE.X && x.Y == tempEnimyBE.Y).FirstOrDefault().Y = tempEnimyAF.Y;
+                    //    RefreshXY(teamOne);
+                    //    RefreshXY(teamTwo);
+                    //    message = "";
+                    //}
+                        Title = "Black go";
+                        tempEnimyBE.X = 100;
+                        tempEnimyBE.Y = 100;
+                        tempEnimyAF.X = 100;
+                        tempEnimyAF.Y = 100;
                 }
             }
             catch { }
         }
+        void EnemiTurn(bool whatteam,int count,int posX, int posY)
+        {
+            if (whatteam) {
+                listButtons.Where(j => j.Name == "P" + (tempEnimyBEBlack.X).ToString() + (tempEnimyBEBlack.Y).ToString()).FirstOrDefault().Content = null;
+                listButtons.Where(j => j.Name == "P" + (tempEnimyAFBlack.X).ToString() + (tempEnimyAFBlack.Y).ToString()).FirstOrDefault().Content = new Ellipse() { Stroke = (Brush)bc.ConvertFrom("#FFFFFFFF") };
+                shashka1 = teamTwo.Where(x => x.X == tempEnimyBEBlack.X && x.Y == tempEnimyBEBlack.Y).FirstOrDefault();
+                shashka1.X = tempEnimyAFBlack.X;
+                shashka1.Y = tempEnimyAFBlack.Y;
+
+                if (count == 6)
+                {
+                    listButtons.Where(j => j.Name == "P" + posX.ToString() + posY.ToString()).FirstOrDefault().Content = null;
+                    listButtons.Where(j => j.Name == "P" + posX.ToString() + posY.ToString()).FirstOrDefault().Tag = "unuse";
+                    teamOne.Remove(teamOne.Where(x => x.X == posX && x.Y == posY).FirstOrDefault());
+                }
+
+                //teamTwo.Where(x => x.X == tempEnimyBEBlack.X && x.Y == tempEnimyBEBlack.Y).FirstOrDefault().X = tempEnimyAFBlack.X;
+                //teamTwo.Where(x => x.X == tempEnimyBEBlack.X && x.Y == tempEnimyBEBlack.Y).FirstOrDefault().Y = tempEnimyAFBlack.Y;
+                RefreshXY(teamOne);
+                RefreshXY(teamTwo);
+
+               // tempEnimyDELET = "";
+            }
+            else {
+                listButtons.Where(j => j.Name == "P" + (tempEnimyBE.X).ToString() + (tempEnimyBE.Y).ToString()).FirstOrDefault().Content = null;
+                listButtons.Where(j => j.Name == "P" + (tempEnimyAF.X).ToString() + (tempEnimyAF.Y).ToString()).FirstOrDefault().Content = new Ellipse() { Stroke = (Brush)bc.ConvertFrom("#FF000000") };
+                shashka2 = teamOne.Where(x => x.X == tempEnimyBE.X && x.Y == tempEnimyBE.Y).FirstOrDefault();
+                shashka2.X = tempEnimyAF.X;
+                shashka2.Y = tempEnimyAF.Y;
+
+                if (count == 6)
+                {
+                    listButtons.Where(j => j.Name == "P" + posX.ToString() + posY.ToString()).FirstOrDefault().Content = null;
+                    listButtons.Where(j => j.Name == "P" + posX.ToString() + posY.ToString()).FirstOrDefault().Tag = "unuse";
+                    teamOne.Remove(teamOne.Where(x => x.X == posX && x.Y == posY).FirstOrDefault());
+                }
+
+                //teamOne.Where(x => x.X == tempEnimyBE.X && x.Y == tempEnimyBE.Y).FirstOrDefault().X = tempEnimyAF.X;
+                //teamOne.Where(x => x.X == tempEnimyBE.X && x.Y == tempEnimyBE.Y).FirstOrDefault().Y = tempEnimyAF.Y;
+                RefreshXY(teamOne);
+                RefreshXY(teamTwo);
+
+               // tempEnimyDELET = "";
+            }
+        }
         string cord = "";
         private void SendData()
         {
-          
-             cord += tempBut.X.ToString()+ tempBut.Y.ToString(); //////cord
-            if (cord.Length==4) {
+
+            cord += tempBut.X.ToString() + tempBut.Y.ToString() +tempEnimyDELET; //////cord
+            if (cord.Length==4 || cord.Length == 6)
+            {
                 byte[] data = Encoding.Unicode.GetBytes(cord);
                 stream.Write(data, 0, data.Length);
                 cord = "";
+                tempEnimyDELET = "";
             }
         }
         void Disconnect()
@@ -303,6 +476,7 @@ namespace GameClient
         private void Button_Click_black(object sender, RoutedEventArgs e)
         {
             whatTeam = false;
+        
         }
     }
 }
