@@ -1,7 +1,6 @@
 D:\User\Desktop\ShashcuOnline\GameClient\GameClient\bin\Debug\GameClient.exe.config
 D:\User\Desktop\ShashcuOnline\GameClient\GameClient\bin\Debug\GameClient.exe
 D:\User\Desktop\ShashcuOnline\GameClient\GameClient\bin\Debug\GameClient.pdb
-D:\User\Desktop\ShashcuOnline\GameClient\GameClient\obj\Debug\GameClient.csprojAssemblyReference.cache
 D:\User\Desktop\ShashcuOnline\GameClient\GameClient\obj\Debug\MainWindow.g.cs
 D:\User\Desktop\ShashcuOnline\GameClient\GameClient\obj\Debug\App.g.cs
 D:\User\Desktop\ShashcuOnline\GameClient\GameClient\obj\Debug\GameClient_MarkupCompile.cache
@@ -13,3 +12,4 @@ D:\User\Desktop\ShashcuOnline\GameClient\GameClient\obj\Debug\GameClient.csproj.
 D:\User\Desktop\ShashcuOnline\GameClient\GameClient\obj\Debug\GameClient.csproj.CoreCompileInputs.cache
 D:\User\Desktop\ShashcuOnline\GameClient\GameClient\obj\Debug\GameClient.exe
 D:\User\Desktop\ShashcuOnline\GameClient\GameClient\obj\Debug\GameClient.pdb
+D:\User\Desktop\ShashcuOnline\GameClient\GameClient\obj\Debug\GameClient.csprojAssemblyReference.cache
