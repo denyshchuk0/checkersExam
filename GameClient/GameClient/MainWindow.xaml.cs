@@ -138,7 +138,7 @@ namespace GameClient
             if (button.Content is Ellipse || listButtons.Find(x => Umova(x, 0, 0, whatTeam)).BorderBrush == Brushes.Red)
             {
                 //перевірка чи це перша шашка або чи це та вже вибрана шашка
-                if (isUseButt == button.Name || isUseButt == "")
+                if (isUseButt == button.Name || isUseButt == "" && (button.Content as Ellipse).Stroke.ToString() != colorEnemi)
                 {
                     //обираємо шашку якщо вона НЕ вибрана
                     if (button.Tag.ToString() == "unuse")
