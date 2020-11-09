@@ -32,6 +32,8 @@ namespace GameClient
 
         string coordinate_sending = "";
 
+        string block_sending = "1";
+
 
 
 
@@ -120,12 +122,12 @@ namespace GameClient
         {
             Button button = (sender as Button);
             if (whatTeam)
-                if (tempEnimyBEBlack.X != 100 && tempEnimyBEBlack.Y != 100 && tempEnimyAFBlack.X != 100 && tempEnimyAFBlack.Y != 100)
+                if (block_sending=="0")
                     Turn(teamOne, button, colorTeamTwo, teamTwo);
                 else
                     Title = "Waite Black turn";
             else if (!whatTeam)
-                if (tempEnimyBE.X != 100 && tempEnimyBE.Y != 100 && tempEnimyAF.X != 100 && tempEnimyAF.Y != 100)
+                if (block_sending=="0")
                     Turn(teamTwo, button, colorTeamOne, teamOne);
                 else
                     Title = "Waite White turn";
@@ -162,9 +164,8 @@ namespace GameClient
                 {
                     if (Umova(button, 1, 1, whatTeam) && button.Content == null || Umova(button, 1, -1, whatTeam) && button.Content == null)
                     {
-                        SendData();
+                        coordinate_sending = tempBut.X.ToString() + tempBut.Y.ToString();
                         //повертаємо попередній кнопці тег "не використовується" і обнуляємо
-                       // ForStart(button, team);
                         CanselBorder(listButtons.Where(x => Umova(x, 0, 0, whatTeam)).FirstOrDefault());
                         listButtons.Where(x => Umova(x, 0, 0, whatTeam)).FirstOrDefault().Content = null;
 
@@ -191,52 +192,41 @@ namespace GameClient
                             if (Umova(button, 2, 2, whatTeam)
                                && button.Content == null)
                             {
-                                SendData();
-                                // ForStart(FindMtBut(1, 1, whatTeam), team);
+                                coordinate_sending = tempBut.X.ToString() + tempBut.Y.ToString();
                                 FindMtBut(1, 1, whatTeam).Content = null;
                                 CanselBorder(FindMtBut(0, 0, whatTeam));
-
 
                                 tempEnimyDELET = FindMtBut(1, 1, whatTeam).Name[1].ToString() + FindMtBut(1, 1, whatTeam).Name[2].ToString();
                                 Enemi.Remove(Enemi.Where(x => x.X == Convert.ToInt32(FindMtBut(1, 1, whatTeam).Name[1].ToString()) && x.Y == Convert.ToInt32(FindMtBut(1, 1, whatTeam).Name[2].ToString())).FirstOrDefault());
 
                                 obj = team.Where(x => x.X == tempBut.X && x.Y == tempBut.Y).FirstOrDefault();
-                                //button.Content = obj.form;
                                 obj.X = Convert.ToInt32(button.Name[1].ToString());
                                 obj.Y = Convert.ToInt32(button.Name[2].ToString());
-                                //tempBut.X = obj.X;
-                                //tempBut.Y = obj.Y;
 
                                 FindMtBut(2, 2, whatTeam).Content = FindMtBut(0, 0, whatTeam).Content;
 
                                 FindMtBut(0, 0, whatTeam).Content = null;
 
-
-
                                 tempBut.X = Convert.ToInt32(button.Name[1].ToString());
                                 tempBut.Y = Convert.ToInt32(button.Name[2].ToString());
                                 isUseButt = "";
-
                                 if (whatTeam)
-                                    Block(tempEnimyBEBlack, tempEnimyAFBlack, "Black go");
+                                    Block(tempEnimyBEBlack, tempEnimyAFBlack, "White go");
                                 else
-                                    Block(tempEnimyBE, tempEnimyAF, "White go");
+                                    Block(tempEnimyBE, tempEnimyAF, "Black go");
                             }
                             else if (Umova(button, 2, -2, whatTeam)
                             && button.Content == null)
                             {
-                                SendData();
-                                // ForStart(FindMtBut(1, -1, whatTeam), team);
+                                coordinate_sending = tempBut.X.ToString() + tempBut.Y.ToString();
                                 FindMtBut(1, -1, whatTeam).Content = null;
 
                                 CanselBorder(FindMtBut(0, 0, whatTeam));
-
 
                                 tempEnimyDELET = FindMtBut(1, -1, whatTeam).Name[1].ToString() + FindMtBut(1, -1, whatTeam).Name[2].ToString();
                                 Enemi.Remove(Enemi.Where(x => x.X == Convert.ToInt32(FindMtBut(1, -1, whatTeam).Name[1].ToString()) && x.Y == Convert.ToInt32(FindMtBut(1, -1, whatTeam).Name[2].ToString())).FirstOrDefault());
 
                                 obj = team.Where(x => x.X == tempBut.X && x.Y == tempBut.Y).FirstOrDefault();
-                                //button.Content = obj.form;
                                 obj.X = Convert.ToInt32(button.Name[1].ToString());
                                 obj.Y = Convert.ToInt32(button.Name[2].ToString());
 
@@ -248,8 +238,7 @@ namespace GameClient
                                 tempBut.Y = Convert.ToInt32(button.Name[2].ToString());
                                 isUseButt = "";
 
-                                
-                                if (whatTeam) 
+                                if (whatTeam)
                                     Block(tempEnimyBEBlack, tempEnimyAFBlack, "White go");
                                 else
                                     Block(tempEnimyBE, tempEnimyAF, "Black go");
@@ -257,19 +246,16 @@ namespace GameClient
                         }
                     }
                 }
-               // RefreshXY(teamOne);
                 RefreshXY(team);
             }
         }
 
         private void Block(Shashka tmpShaBE, Shashka tmpShaAF, string status)
         {
+            block_sending = "0";
             SendData();
             Title = status;
-            tmpShaBE.X = 100;
-            tmpShaBE.Y = 100;
-            tmpShaAF.X = 100;
-            tmpShaAF.Y = 100;
+            block_sending = "1";
         }
 
         private static void CanselBorder(Button button)
@@ -307,14 +293,6 @@ namespace GameClient
             Button button = new Button() { Content = new Ellipse() { Stroke = (Brush)brush_convert.ConvertFrom("#A9A9A9") } };
             return button;
         }
-        void ForStart(Button button, List<Shashka> team)
-        {
-            try
-            {
-              
-            }
-            catch { }
-        }
 
         void ReceiveData()
         {
@@ -337,6 +315,10 @@ namespace GameClient
                     int y = Convert.ToInt32(message[1].ToString());
                     int z = Convert.ToInt32(message[2].ToString());
                     int a = Convert.ToInt32(message[3].ToString());
+                    if (message.Length == 5)
+                        block_sending = message[4].ToString();
+                    else
+                        block_sending = message[6].ToString();
 
                     if (whatTeam)
                     {
@@ -344,10 +326,10 @@ namespace GameClient
                         tempEnimyBEBlack.Y = y;
                         tempEnimyAFBlack.X = z;
                         tempEnimyAFBlack.Y = a;
-                        if (message.Length == 6)
-                            Dispatcher.Invoke(() => EnemiTurn(whatTeam, 6, Convert.ToInt32(message[4].ToString()), Convert.ToInt32(message[5].ToString())));
+                        if (message.Length == 7)
+                            Dispatcher.Invoke(() => EnemiTurn(whatTeam, 7, Convert.ToInt32(message[4].ToString()), Convert.ToInt32(message[5].ToString())));
                         else
-                            Dispatcher.Invoke(() => EnemiTurn(whatTeam, 4, 0, 0));
+                            Dispatcher.Invoke(() => EnemiTurn(whatTeam, 5, 0, 0));
                     }
                     else
                     {
@@ -355,10 +337,10 @@ namespace GameClient
                         tempEnimyBE.Y = y;
                         tempEnimyAF.X = z;
                         tempEnimyAF.Y = a;
-                        if (message.Length == 6)
-                            Dispatcher.Invoke(() => EnemiTurn(whatTeam, 6, Convert.ToInt32(message[4].ToString()), Convert.ToInt32(message[5].ToString())));
+                        if (message.Length == 7)
+                            Dispatcher.Invoke(() => EnemiTurn(whatTeam, 7, Convert.ToInt32(message[4].ToString()), Convert.ToInt32(message[5].ToString())));
                         else
-                            Dispatcher.Invoke(() => EnemiTurn(whatTeam, 4, 0, 0));
+                            Dispatcher.Invoke(() => EnemiTurn(whatTeam, 5, 0, 0));
                     }
                     tempEnimyDELET = "";
                 }
@@ -385,7 +367,7 @@ namespace GameClient
             shashka = teamEnem.Where(x => x.X == shashkaBE.X && x.Y == shashkaBE.Y).FirstOrDefault();
             shashka.X = shashkaAF.X;
             shashka.Y = shashkaAF.Y;
-            if (count == 6)
+            if (count == 7)
             {
                 listButtons.Where(j => j.Name == "P" + posX.ToString() + posY.ToString()).FirstOrDefault().Content = null;
                 listButtons.Where(j => j.Name == "P" + posX.ToString() + posY.ToString()).FirstOrDefault().Tag = "unuse";
@@ -395,8 +377,8 @@ namespace GameClient
        
         private void SendData()
         {
-            coordinate_sending += tempBut.X.ToString() + tempBut.Y.ToString() + tempEnimyDELET; //////cord
-            if (coordinate_sending.Length == 4 || coordinate_sending.Length == 6)
+            coordinate_sending += tempBut.X.ToString() + tempBut.Y.ToString() + tempEnimyDELET+block_sending; //////cord
+            if (coordinate_sending.Length == 5 || coordinate_sending.Length == 7)
             {
                 byte[] data = Encoding.Unicode.GetBytes(coordinate_sending);
                 stream.Write(data, 0, data.Length);
@@ -415,6 +397,7 @@ namespace GameClient
 
         private void Button_Click_white(object sender, RoutedEventArgs e)
         {
+            block_sending = "0";
             whatTeam = true;
         }
 
