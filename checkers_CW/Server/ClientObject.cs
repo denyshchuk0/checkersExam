@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Server
 {
@@ -29,7 +26,7 @@ namespace Server
                 Stream = client.GetStream();
                 // получаем имя пользователя
                 string message = GetData();
-       
+
                 // посылаем сообщение о входе в чат всем подключенным пользователям
                 server.BroadcastData(message, this.Id);
                 Console.WriteLine(message);
@@ -39,7 +36,7 @@ namespace Server
                     try
                     {
                         message = GetData();
-                        message = String.Format( message);
+                        message = String.Format(message);
                         Console.WriteLine(message);
                         server.BroadcastData(message, this.Id);
                     }
