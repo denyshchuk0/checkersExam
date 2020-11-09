@@ -164,8 +164,23 @@ namespace GameClient
                     {
                         SendData();
                         //повертаємо попередній кнопці тег "не використовується" і обнуляємо
-                        ForStart(button, team);
+                       // ForStart(button, team);
+                        CanselBorder(listButtons.Where(x => Umova(x, 0, 0, whatTeam)).FirstOrDefault());
+                        listButtons.Where(x => Umova(x, 0, 0, whatTeam)).FirstOrDefault().Content = null;
 
+                        obj = team.Where(x => x.X == tempBut.X && x.Y == tempBut.Y).FirstOrDefault();
+
+                        button.Content = obj.form;
+                        obj.X = Convert.ToInt32(button.Name[1].ToString());
+                        obj.Y = Convert.ToInt32(button.Name[2].ToString());
+                        tempBut.X = obj.X;
+                        tempBut.Y = obj.Y;
+
+                        isUseButt = "";
+                        if (whatTeam)
+                            Block(tempEnimyBEBlack, tempEnimyAFBlack, "White go");
+                        else
+                            Block(tempEnimyBE, tempEnimyAF, "Black go");
                     }
                     else if (FindMtBut(1, 1, whatTeam).Content != null && (FindMtBut(1, 1, whatTeam).Content as Ellipse).Stroke.ToString() == colorEnemi
                              || FindMtBut(1, -1, whatTeam).Content != null && (FindMtBut(1, -1, whatTeam).Content as Ellipse).Stroke.ToString() == colorEnemi)
@@ -176,6 +191,7 @@ namespace GameClient
                             if (Umova(button, 2, 2, whatTeam)
                                && button.Content == null)
                             {
+                                SendData();
                                 // ForStart(FindMtBut(1, 1, whatTeam), team);
                                 FindMtBut(1, 1, whatTeam).Content = null;
                                 CanselBorder(FindMtBut(0, 0, whatTeam));
@@ -209,6 +225,7 @@ namespace GameClient
                             else if (Umova(button, 2, -2, whatTeam)
                             && button.Content == null)
                             {
+                                SendData();
                                 // ForStart(FindMtBut(1, -1, whatTeam), team);
                                 FindMtBut(1, -1, whatTeam).Content = null;
 
@@ -294,41 +311,7 @@ namespace GameClient
         {
             try
             {
-                CanselBorder(listButtons.Where(x => Umova(x, 0, 0, whatTeam)).FirstOrDefault());
-                listButtons.Where(x => Umova(x, 0, 0, whatTeam)).FirstOrDefault().Content = null;
-
-                obj = team.Where(x => x.X == tempBut.X && x.Y == tempBut.Y).FirstOrDefault();
-
-                button.Content = obj.form;
-                obj.X = Convert.ToInt32(button.Name[1].ToString());
-                obj.Y = Convert.ToInt32(button.Name[2].ToString());
-                tempBut.X = obj.X;
-                tempBut.Y = obj.Y;
-
-                isUseButt = "";
-                SendData();
-
-                if (whatTeam)
-                {
-
-                    Title = "White go";
-                    tempEnimyBEBlack.X = 100;
-                    tempEnimyBEBlack.Y = 100;
-                    tempEnimyAFBlack.X = 100;
-                    tempEnimyAFBlack.Y = 100;
-
-
-                }
-                else
-                {
-
-
-                    Title = "Black go";
-                    tempEnimyBE.X = 100;
-                    tempEnimyBE.Y = 100;
-                    tempEnimyAF.X = 100;
-                    tempEnimyAF.Y = 100;
-                }
+              
             }
             catch { }
         }
@@ -355,7 +338,6 @@ namespace GameClient
                     int z = Convert.ToInt32(message[2].ToString());
                     int a = Convert.ToInt32(message[3].ToString());
 
-
                     if (whatTeam)
                     {
                         tempEnimyBEBlack.X = x;
@@ -366,7 +348,6 @@ namespace GameClient
                             Dispatcher.Invoke(() => EnemiTurn(whatTeam, 6, Convert.ToInt32(message[4].ToString()), Convert.ToInt32(message[5].ToString())));
                         else
                             Dispatcher.Invoke(() => EnemiTurn(whatTeam, 4, 0, 0));
-
                     }
                     else
                     {
