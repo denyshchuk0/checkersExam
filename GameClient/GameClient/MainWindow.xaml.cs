@@ -146,7 +146,7 @@ namespace GameClient
                     if (button.Tag.ToString() == "unuse")
                     {
                         button.BorderBrush = Brushes.Red;
-                        button.BorderThickness = new Thickness(10.0);
+                        button.BorderThickness = new Thickness(3.0);
                         button.Tag = "use";
                         isUseButt = button.Name;
                         tempBut.X = Convert.ToInt32(button.Name[1].ToString());
@@ -399,12 +399,32 @@ namespace GameClient
         {
             block_sending = "0";
             whatTeam = true;
+            Doska.Visibility = Visibility.Visible;
+            SelectTeam.Visibility = Visibility.Hidden;
+            brRamka.Visibility = Visibility.Visible;
+
+
+
         }
 
         private void Button_Click_black(object sender, RoutedEventArgs e)
         {
             whatTeam = false;
+            Doska.Visibility = Visibility.Visible;
+            SelectTeam.Visibility = Visibility.Hidden;
+            brRamka.Visibility = Visibility.Visible;
 
+        }
+
+        private void StartClick(object sender, RoutedEventArgs e)
+        {
+            Menu.Visibility = Visibility.Hidden;
+            SelectTeam.Visibility = Visibility.Visible;
+        }
+
+        private void ExitClick(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

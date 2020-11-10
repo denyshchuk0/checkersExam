@@ -8,82 +8,112 @@
         Title="MainWindow" Height="800" Width="800">
     <Window.Resources>
         <Style x:Key="ButtonState">
-            <Setter Property="ItemsControl.Background" Value="DarkGoldenrod"></Setter>
+            <Setter Property="ItemsControl.Background" >
+                <Setter.Value>
+                    <ImageBrush ImageSource="bgDoska2.jpg" TileMode="Tile"></ImageBrush>
+                </Setter.Value>
+            </Setter>
             <Setter Property="ItemsControl.DataContext" Value="{}"></Setter>
         </Style>
     </Window.Resources>
-    <Grid x:Name="Doska" Margin="20" Background="Bisque">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-        </Grid.RowDefinitions>
-        <!--<Ellipse StrokeThickness="40" Stroke="Aquamarine" ></Ellipse>-->
+    <Grid >
+        <Grid.Background>
+            <ImageBrush ImageSource="bg.jpg" TileMode="Tile"/>
+        </Grid.Background>
+        <Grid x:Name="Menu" Visibility="Visible">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="147*"/>
+                <RowDefinition Height="152*"/>
+            </Grid.RowDefinitions>
+            <Button  x:Name="btnStart" Content="STARTYEM" Click="StartClick" Background="Bisque"/>
+            <Button  x:Name="btnExit" Content="Exit" Click="ExitClick" Grid.Row="1" Background="#FFB8860B" />
 
-        <!--<Grid Grid.Column="1"  Background="White">
-            <Ellipse Stroke="Black" StrokeThickness="15" Margin="10"></Ellipse>
-        <Grid Grid.Column="2" Background="Black"></Grid>-->
-        <Button Grid.Row="0" Grid.Column="0"  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="0" Grid.Column="2"  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="0" Grid.Column="4"  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="0" Grid.Column="6"  Style="{StaticResource ButtonState}"></Button>
+        </Grid>
+        <Grid x:Name="SelectTeam" Visibility="Hidden">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="199*"/>
+                <ColumnDefinition Width="197*"/>
+            </Grid.ColumnDefinitions>
 
-        <Button Grid.Row="1" Grid.Column="1"  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="1" Grid.Column="3"  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="1" Grid.Column="5"  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="1" Grid.Column="7"  Style="{StaticResource ButtonState}"></Button>
+            <Button  Click="Button_Click_white" Background="White">white</Button>
+            <Button Click="Button_Click_black" Grid.Column="2" Background="Black" Foreground="White">black</Button>
+        </Grid>
+        <Label x:Name="brRamka" Width="630" Height="630" Margin="20 20 20 20" Visibility="Hidden">
+            <Label.Background>
+                <ImageBrush ImageSource="br3.jpg"/>
+            </Label.Background>
+
+            <Grid x:Name="Doska" Width="600" Height="600" Margin="10 10 0 0" Visibility="Hidden" >
+                <Grid.Background>
+                    <ImageBrush ImageSource="bgDoska.jpg"/>
+                </Grid.Background>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Button Grid.Row="0" Grid.Column="0"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="0" Grid.Column="2"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="0" Grid.Column="4"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="0" Grid.Column="6"  Style="{StaticResource ButtonState}"></Button>
+
+                <Button Grid.Row="1" Grid.Column="1"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="1" Grid.Column="3"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="1" Grid.Column="5"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="1" Grid.Column="7"  Style="{StaticResource ButtonState}"></Button>
 
 
-        <Button Grid.Row="2"                  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="2" Grid.Column="2"  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="2" Grid.Column="4"  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="2" Grid.Column="6"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="2"                  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="2" Grid.Column="2"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="2" Grid.Column="4"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="2" Grid.Column="6"  Style="{StaticResource ButtonState}"></Button>
 
 
-        <Button Grid.Row="3" Grid.Column="1" Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="3" Grid.Column="3" Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="3" Grid.Column="5" Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="3" Grid.Column="7" Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="3" Grid.Column="1" Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="3" Grid.Column="3" Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="3" Grid.Column="5" Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="3" Grid.Column="7" Style="{StaticResource ButtonState}"></Button>
 
-        <Button Grid.Row="4"                  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="4" Grid.Column="2"  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="4" Grid.Column="4"  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="4" Grid.Column="6"  Style="{StaticResource ButtonState}"></Button>
-
-
-        <Button Grid.Row="5" Grid.Column="1"  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="5" Grid.Column="3"  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="5"  Grid.Column="5" Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="5" Grid.Column="7"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="4"                  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="4" Grid.Column="2"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="4" Grid.Column="4"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="4" Grid.Column="6"  Style="{StaticResource ButtonState}"></Button>
 
 
-        <Button Grid.Row="6"                  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="6" Grid.Column="2"  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="6" Grid.Column="4"  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="6" Grid.Column="6"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="5" Grid.Column="1"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="5" Grid.Column="3"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="5"  Grid.Column="5" Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="5" Grid.Column="7"  Style="{StaticResource ButtonState}"></Button>
 
-        <Button Grid.Row="7" Grid.Column="1"  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="7" Grid.Column="3"  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="7" Grid.Column="5"  Style="{StaticResource ButtonState}"></Button>
-        <Button Grid.Row="7" Grid.Column="7"  Style="{StaticResource ButtonState}"></Button>
 
-        <Button Grid.Column="8" Click="Button_Click_white">white</Button>
-        <Button Grid.Column="8" Grid.Row="1" Click="Button_Click_black">black</Button>
+                <Button Grid.Row="6"                  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="6" Grid.Column="2"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="6" Grid.Column="4"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="6" Grid.Column="6"  Style="{StaticResource ButtonState}"></Button>
+
+                <Button Grid.Row="7" Grid.Column="1"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="7" Grid.Column="3"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="7" Grid.Column="5"  Style="{StaticResource ButtonState}"></Button>
+                <Button Grid.Row="7" Grid.Column="7"  Style="{StaticResource ButtonState}"></Button>
+
+
+            </Grid>
+        </Label>
     </Grid>
 </Window>

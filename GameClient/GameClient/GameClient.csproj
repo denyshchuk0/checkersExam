@@ -95,5 +95,30 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bg.jpg" />
+    <Resource Include="img\bg.jpg" />
+    <Resource Include="img\bgDoska2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="br.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="br2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="br3.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bgDoska.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="bgDoska2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\bgDoska.jpg" />
+    <Resource Include="img\br.jpg" />
+    <Resource Include="img\br3.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
