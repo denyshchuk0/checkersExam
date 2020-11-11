@@ -56,7 +56,7 @@ namespace GameClient
             InitializeComponent();
 
             listButtons = new List<Button>();
-          
+            item = this.Doska.Children;
 
             // Connect();
             CreateDoska();
@@ -225,7 +225,6 @@ namespace GameClient
                     MessageBox.Show("LOOOSSEERRRR!!!");
                     CreateDoska();
                 }
-
                 else if (Enemi.Count == 0)
                 {
                     MessageBox.Show("WInnneeerrr!!");
