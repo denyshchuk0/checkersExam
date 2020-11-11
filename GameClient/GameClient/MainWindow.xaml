@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="800" Closing="Window_Closing">
+        Title="ShashkI na DoskE" Height="800" Width="800" Closing="Window_Closing" Icon="chess-icon.png">
     <Window.Resources>
         <Style x:Key="ButtonState">
             <Setter Property="ItemsControl.Background" >
@@ -38,6 +38,7 @@
             <Button  Click="Button_Click_white" Background="White" FontFamily="Wide Latin" FontSize="60">white</Button>
             <Button Click="Button_Click_black" Grid.Column="2" Background="Black" Foreground="White" FontFamily="Wide Latin" FontSize="60">black</Button>
         </Grid>
+        <Label x:Name="Screen" Visibility="Hidden" HorizontalContentAlignment="Center" VerticalAlignment="Top" FontSize="30" Foreground="#FFE6E6E6" FontWeight="Bold" ></Label>
         <Label x:Name="brRamka" Width="630" Height="630" Margin="20 20 20 20" Visibility="Hidden">
             <Label.Background>
                 <ImageBrush ImageSource="img/br3.jpg"/>

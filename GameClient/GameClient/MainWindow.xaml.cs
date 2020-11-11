@@ -134,12 +134,12 @@ namespace GameClient
                 if (block_sending == "0")
                     Turn(teamOne, button, colorTeamTwo, teamTwo);
                 else
-                    Title = "Waite Black turn";
+                    Screen.Content = "Waite Black turn";
             else if (!whatTeam)
                 if (block_sending == "0")
                     Turn(teamTwo, button, colorTeamOne, teamOne);
                 else
-                    Title = "Waite White turn";
+                    Screen.Content = "Waite White turn";
         }
         #region Turn
         void Turn(List<Shashka> team, Button button, string colorEnemi, List<Shashka> Enemi)
@@ -188,9 +188,9 @@ namespace GameClient
 
                         isUseButt = "";
                         if (whatTeam)
-                            Block("White go", "1", "0");
+                            Block("Waite Black turn", "1", "0");
                         else
-                            Block("White go", "1", "0");
+                            Block("Waite White turn", "1", "0");
                     }
                     else
                     {
@@ -262,14 +262,14 @@ namespace GameClient
                     button.BorderThickness = new Thickness(3.0);
                     button.Tag = "use";
                     isUseButt = button.Name;
-                    Block("White go", "0", "1");
+                    Block("You can attacking enemi", "0", "1");
                 }
                 else
                 {
                     if (whatTeam)
-                        Block("White go", "1", "0");
+                        Block("Waite Black turn", "1", "0");
                     else
-                        Block("Black go", "1", "0");
+                        Block("Waite White turn", "1", "0");
                 }
             }
         }
@@ -302,7 +302,7 @@ namespace GameClient
         {
             block_sending = black;
             SendData();
-            Title = status;
+            Screen.Content = status;
             block_sending = white;
         }
 
@@ -381,6 +381,7 @@ namespace GameClient
                             Dispatcher.Invoke(() => EnemiTurn(whatTeam, 7, Convert.ToInt32(message[4].ToString()), Convert.ToInt32(message[5].ToString())));
                         else
                             Dispatcher.Invoke(() => EnemiTurn(whatTeam, 5, 0, 0));
+                        Dispatcher.Invoke(() => Screen.Content = " White is going");
                     }
                     else
                     {
@@ -392,8 +393,10 @@ namespace GameClient
                             Dispatcher.Invoke(() => EnemiTurn(whatTeam, 7, Convert.ToInt32(message[4].ToString()), Convert.ToInt32(message[5].ToString())));
                         else
                             Dispatcher.Invoke(() => EnemiTurn(whatTeam, 5, 0, 0));
+                        Dispatcher.Invoke(() => Screen.Content = " Black is going");
                     }
                     tempEnimyDELET = "";
+                   
                 }
                 catch (Exception ex)
                 { MessageBox.Show(ex.Message); Disconnect(); }
@@ -435,6 +438,7 @@ namespace GameClient
             Doska.Visibility = Visibility.Visible;
             SelectTeam.Visibility = Visibility.Hidden;
             brRamka.Visibility = Visibility.Visible;
+            Screen.Visibility = Visibility.Visible;
         }
         private void Button_Click_black(object sender, RoutedEventArgs e)
         {
@@ -442,6 +446,7 @@ namespace GameClient
             Doska.Visibility = Visibility.Visible;
             SelectTeam.Visibility = Visibility.Hidden;
             brRamka.Visibility = Visibility.Visible;
+            Screen.Visibility = Visibility.Visible;
         }
 
         private void StartClick(object sender, RoutedEventArgs e)

@@ -104,5 +104,8 @@
     <Resource Include="img\br.jpg" />
     <Resource Include="img\br3.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="chess-icon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
