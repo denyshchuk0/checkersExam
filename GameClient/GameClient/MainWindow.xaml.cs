@@ -444,5 +444,10 @@ namespace GameClient
             this.Close();
         }
         #endregion
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Disconnect();
+        }
     }
 }
