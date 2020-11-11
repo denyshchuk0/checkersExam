@@ -140,9 +140,6 @@ namespace GameClient
                     Turn(teamTwo, button, colorTeamOne, teamOne);
                 else
                     Title = "Waite White turn";
-
-        
-
         }
         #region Turn
         void Turn(List<Shashka> team, Button button, string colorEnemi, List<Shashka> Enemi)
@@ -173,6 +170,7 @@ namespace GameClient
                 //перевіряємо чи там не має іншої шашки + перевіряємо чи бажаний хід є в зоні обмеження 
                 else
                 {
+                   
                     if (Umova(button, 1, 1, whatTeam) && button.Content == null || Umova(button, 1, -1, whatTeam) && button.Content == null)
                     {
                         coordinate_sending = tempBut.X.ToString() + tempBut.Y.ToString();
@@ -223,64 +221,68 @@ namespace GameClient
                 if (team.Count == 0)
                 {
                     MessageBox.Show("LOOOSSEERRRR!!!");
-                    CreateDoska();
+                 //   CreateDoska();
                 }
                 else if (Enemi.Count == 0)
                 {
                     MessageBox.Show("WInnneeerrr!!");
-                    CreateDoska();
+                  //  CreateDoska();
                 }
-
-
             }
         }
         private void TurnAtack(List<Shashka> team, Button button, string colorEnemi, List<Shashka> Enemi, int xEnemi, int yEnemi, int xTurn, int yTurn)
         {
-            try
+
+            if (FindMtBut(xEnemi, yEnemi).Content != null && (FindMtBut(xEnemi, yEnemi).Content as Ellipse).Stroke.ToString() == colorEnemi && button.Content == null)
             {
-                if (FindMtBut(xEnemi, yEnemi).Content != null && (FindMtBut(xEnemi, yEnemi).Content as Ellipse).Stroke.ToString() == colorEnemi && button.Content == null)
+                coordinate_sending = tempBut.X.ToString() + tempBut.Y.ToString();
+                FindMtBut(xEnemi, yEnemi).Content = null;
+                CanselBorder(FindMtBut(0, 0));
+
+                tempEnimyDELET = FindMtBut(xEnemi, yEnemi).Name[1].ToString() + FindMtBut(xEnemi, yEnemi).Name[2].ToString();
+                Enemi.Remove(Enemi.Where(x => x.X == Convert.ToInt32(FindMtBut(xEnemi, yEnemi).Name[1].ToString()) && x.Y == Convert.ToInt32(FindMtBut(xEnemi, yEnemi).Name[2].ToString())).FirstOrDefault());
+
+                obj = team.Where(x => x.X == tempBut.X && x.Y == tempBut.Y).FirstOrDefault();
+                obj.X = Convert.ToInt32(button.Name[1].ToString());
+                obj.Y = Convert.ToInt32(button.Name[2].ToString());
+
+                FindMtBut(xTurn, yTurn).Content = FindMtBut(0, 0).Content;
+
+                FindMtBut(0, 0).Content = null;
+
+                tempBut.X = Convert.ToInt32(button.Name[1].ToString());
+                tempBut.Y = Convert.ToInt32(button.Name[2].ToString());
+                isUseButt = "";
+                if (UmovaRamka(1, 1, 2, 2, colorEnemi, '7', '7')
+                || UmovaRamka(1, -1, 2, -2, colorEnemi, '7', '0')
+                || UmovaRamka(-1, 1, -2, 2, colorEnemi, '0', '7')
+                || UmovaRamka(-1, -1, -2, -2, colorEnemi, '0', '0'))
                 {
-                    coordinate_sending = tempBut.X.ToString() + tempBut.Y.ToString();
-                    FindMtBut(xEnemi, yEnemi).Content = null;
-                    CanselBorder(FindMtBut(0, 0));
-
-                    tempEnimyDELET = FindMtBut(xEnemi, yEnemi).Name[1].ToString() + FindMtBut(xEnemi, yEnemi).Name[2].ToString();
-                    Enemi.Remove(Enemi.Where(x => x.X == Convert.ToInt32(FindMtBut(xEnemi, yEnemi).Name[1].ToString()) && x.Y == Convert.ToInt32(FindMtBut(xEnemi, yEnemi).Name[2].ToString())).FirstOrDefault());
-
-                    obj = team.Where(x => x.X == tempBut.X && x.Y == tempBut.Y).FirstOrDefault();
-                    obj.X = Convert.ToInt32(button.Name[1].ToString());
-                    obj.Y = Convert.ToInt32(button.Name[2].ToString());
-
-                    FindMtBut(xTurn, yTurn).Content = FindMtBut(0, 0).Content;
-
-                    FindMtBut(0, 0).Content = null;
-
-                    tempBut.X = Convert.ToInt32(button.Name[1].ToString());
-                    tempBut.Y = Convert.ToInt32(button.Name[2].ToString());
-                    isUseButt = "";
-
-                    if (FindMtBut(1, 1).Content != null && (FindMtBut(1, 1).Content as Ellipse).Stroke.ToString() == colorEnemi && FindMtBut(2, 2).Content == null && UmovaFild(2, 2)
-                    || FindMtBut(1, -1).Content != null && (FindMtBut(1, -1).Content as Ellipse).Stroke.ToString() == colorEnemi && FindMtBut(2, -2).Content == null && UmovaFild(2, -2)
-                    || FindMtBut(-1, 1).Content != null && (FindMtBut(-1, 1).Content as Ellipse).Stroke.ToString() == colorEnemi && FindMtBut(-2, 2).Content == null && UmovaFild(-2, 2)
-                    || FindMtBut(-1, -1).Content != null && (FindMtBut(-1, -1).Content as Ellipse).Stroke.ToString() == colorEnemi && FindMtBut(-2, -2).Content == null && UmovaFild(-2, -2))
-                    {
-                        button.BorderBrush = Brushes.Red;
-                        button.BorderThickness = new Thickness(3.0);
-                        button.Tag = "use";
-                        isUseButt = button.Name;
-                        Block("White go", "0", "1");
-                    }
-                    else
+                    button.BorderBrush = Brushes.Red;
+                    button.BorderThickness = new Thickness(3.0);
+                    button.Tag = "use";
+                    isUseButt = button.Name;
+                    Block("White go", "0", "1");
+                }
+                else
+                {
                     if (whatTeam)
                         Block("White go", "1", "0");
                     else
                         Block("Black go", "1", "0");
                 }
             }
-            catch { }
         }
         #endregion
+
         #region Service Funk
+        bool UmovaRamka(int x1, int y1, int x2, int y2, string colorEnemi, char umX, char umY)
+        {
+            if (FindMtBut(x1, y1).Name[1] != umX && FindMtBut(x1, y1).Name[2] != umY)
+                if (FindMtBut(x1, y1).Content != null && (FindMtBut(x1, y1).Content as Ellipse).Stroke.ToString() == colorEnemi && FindMtBut(x2, y2).Content == null && UmovaFild(x2, y2))
+                    return true;
+            return false;
+        }
         private void RefreshXY(List<Shashka> shashkas)
         {
             for (int i = 0; i < shashkas.Count; i++)
@@ -320,7 +322,7 @@ namespace GameClient
                 else
                     return false;
             }
-            else if (tempBut.Y - y < 8 && tempBut.Y - y >= 0 && tempBut.X - x < 8 && tempBut.X - x >= 0)
+            else if (WhoseTurn==false && tempBut.Y - y < 8 && tempBut.Y - y >= 0 && tempBut.X - x < 8 && tempBut.X - x >= 0)
             {
                 if (button.Name == "P" + (tempBut.X - x).ToString() + (tempBut.Y - y).ToString())
                     return true;
@@ -339,7 +341,7 @@ namespace GameClient
         {
             if (tempBut.Y + y < 8 && tempBut.Y + y >= 0 && tempBut.X + x < 8 && tempBut.X + x >= 0)
                 return listButtons.Where(j => j.Name == "P" + (tempBut.X + x).ToString() + (tempBut.Y + y).ToString()).FirstOrDefault();
-            return listButtons.Where(j => j.Name == "P" + (tempBut.X - x).ToString() + (tempBut.Y - y).ToString()).FirstOrDefault();
+           return listButtons.Where(j => j.Name == "P" + (tempBut.X).ToString() + (tempBut.Y).ToString()).FirstOrDefault();
         }
         #endregion
         #region Enemi Turn
