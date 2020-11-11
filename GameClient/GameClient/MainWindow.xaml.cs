@@ -34,11 +34,6 @@ namespace GameClient
 
         string block_sending = "1";
 
-
-
-
-
-
         string colorTeamOne = "#FFFFFFFF";
         string colorTeamTwo = "#FF000000";
         static bool whatTeam = true;
@@ -61,7 +56,7 @@ namespace GameClient
             InitializeComponent();
 
             listButtons = new List<Button>();
-            item = this.Doska.Children;
+          
 
             // Connect();
             CreateDoska();
@@ -82,12 +77,7 @@ namespace GameClient
             }
             catch (Exception ex)
             {
-                if (client.Connected == false)
-                {
-                    Title = "Conecting";
-                    Connect();
-                }
-                // MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message);
             }
         }
         private void SendData()
@@ -112,6 +102,11 @@ namespace GameClient
         #endregion
         private void CreateDoska()
         {
+
+            teamTwo.Clear();
+            teamOne.Clear();
+            listButtons.Clear();
+
             int u = 0;
             for (int y = 0; y < 8; y++)
                 for (int x = 0; x < 8; x++)
@@ -145,6 +140,8 @@ namespace GameClient
                     Turn(teamTwo, button, colorTeamOne, teamOne);
                 else
                     Title = "Waite White turn";
+
+        
 
         }
         #region Turn
@@ -223,6 +220,19 @@ namespace GameClient
                     }
                 }
                 RefreshXY(team);
+                if (team.Count == 0)
+                {
+                    MessageBox.Show("LOOOSSEERRRR!!!");
+                    CreateDoska();
+                }
+
+                else if (Enemi.Count == 0)
+                {
+                    MessageBox.Show("WInnneeerrr!!");
+                    CreateDoska();
+                }
+
+
             }
         }
         private void TurnAtack(List<Shashka> team, Button button, string colorEnemi, List<Shashka> Enemi, int xEnemi, int yEnemi, int xTurn, int yTurn)
