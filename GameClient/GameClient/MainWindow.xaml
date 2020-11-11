@@ -20,23 +20,23 @@
         <Grid.Background>
             <ImageBrush ImageSource="img/bg.jpg" TileMode="Tile"/>
         </Grid.Background>
-        <Grid x:Name="Menu" Visibility="Visible">
+        <Grid x:Name="Menu" Visibility="Visible"  Width="600" Height="600" Margin="10 10 0 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="147*"/>
                 <RowDefinition Height="152*"/>
             </Grid.RowDefinitions>
-            <Button  x:Name="btnStart" Content="STARTYEM" Click="StartClick" Background="Bisque"/>
-            <Button  x:Name="btnExit" Content="Exit" Click="ExitClick" Grid.Row="1" Background="#FFB8860B" />
+            <Button  x:Name="btnStart" Content="START" Click="StartClick" Background="Bisque" FontFamily="Wide Latin" FontSize="60" FontWeight="Bold" Foreground="DarkGoldenrod"/>
+            <Button  x:Name="btnExit" Content="EXIT" Click="ExitClick" Grid.Row="1" Background="#FFB8860B" FontFamily="Wide Latin" FontSize="60" FontWeight="Bold" Foreground="Bisque" />
 
         </Grid>
-        <Grid x:Name="SelectTeam" Visibility="Hidden">
+        <Grid x:Name="SelectTeam" Visibility="Hidden"  Width="600" Height="600" Margin="10 10 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="199*"/>
                 <ColumnDefinition Width="197*"/>
             </Grid.ColumnDefinitions>
 
-            <Button  Click="Button_Click_white" Background="White">white</Button>
-            <Button Click="Button_Click_black" Grid.Column="2" Background="Black" Foreground="White">black</Button>
+            <Button  Click="Button_Click_white" Background="White" FontFamily="Wide Latin" FontSize="60">white</Button>
+            <Button Click="Button_Click_black" Grid.Column="2" Background="Black" Foreground="White" FontFamily="Wide Latin" FontSize="60">black</Button>
         </Grid>
         <Label x:Name="brRamka" Width="630" Height="630" Margin="20 20 20 20" Visibility="Hidden">
             <Label.Background>
