@@ -33,14 +33,15 @@ namespace Server
                 // в бесконечном цикле получаем  от клиента
                 while (true)
                 {
-                    try
+
+                    if (message != "")
                     {
                         message = GetData();
                         message = String.Format(message);
                         Console.WriteLine(message);
                         server.BroadcastData(message, this.Id);
                     }
-                    catch
+                    else
                     {
                         message = String.Format("покинул)");
                         Console.WriteLine(message);
