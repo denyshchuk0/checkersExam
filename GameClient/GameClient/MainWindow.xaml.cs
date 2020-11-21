@@ -22,8 +22,10 @@ namespace GameClient
         static TcpClient client;
         static NetworkStream stream;
 
-        List<Shashka> teamOne = new List<Shashka>();
-        List<Shashka> teamTwo = new List<Shashka>();
+        List<Shashka> team = new List<Shashka>();
+        List<Shashka> enemi = new List<Shashka>();
+        List<Shashka> teamWhite = new List<Shashka>();
+        List<Shashka> teamBlack = new List<Shashka>();
         List<Button> listButtons;
 
         BrushConverter brush_convert = new BrushConverter();
@@ -102,11 +104,6 @@ namespace GameClient
         #endregion
         private void CreateDoska()
         {
-
-            teamTwo.Clear();
-            teamOne.Clear();
-            listButtons.Clear();
-
             int u = 0;
             for (int y = 0; y < 8; y++)
                 for (int x = 0; x < 8; x++)
@@ -117,14 +114,15 @@ namespace GameClient
                         button.Name = "P" + y.ToString() + x.ToString();
                         button.Tag = "unuse";
                         button.Click += Button_Click;
-                        if (x <= 2)
-                            teamOne.Add(new Shashka(colorTeamOne) { X = x, Y = y });
-                        else if (x >= 5)
-                            teamTwo.Add(new Shashka(colorTeamTwo) { X = x, Y = y });
-                        u++;
+                        if (whatTeam)
+                            if (x <= 2)
+                                teamWhite.Add(new Shashka(colorTeamOne) { X = x, Y = y });
+                            else if (x >= 5)
+                                teamBlack.Add(new Shashka(colorTeamTwo) { X = x, Y = y });
+                            u++;
                     }
-            RefreshXY(teamOne);
-            RefreshXY(teamTwo);
+            RefreshXY(teamWhite);
+            RefreshXY(teamBlack);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -132,17 +130,17 @@ namespace GameClient
             Button button = (sender as Button);
             if (whatTeam)
                 if (block_sending == "0")
-                    Turn(teamOne, button, colorTeamTwo, teamTwo);
+                    Turn( button, colorTeamTwo);
                 else
                     Screen.Content = "Waite Black turn";
             else if (!whatTeam)
                 if (block_sending == "0")
-                    Turn(teamTwo, button, colorTeamOne, teamOne);
+                    Turn( button, colorTeamOne);
                 else
                     Screen.Content = "Waite White turn";
         }
         #region Turn
-        void Turn(List<Shashka> team, Button button, string colorEnemi, List<Shashka> Enemi)
+        void Turn( Button button, string colorEnemi)
         {
             //перевіряємо чи є шашка на кнопці або чи вибрана яка інша шашка на полі 
             if (button.Content is Ellipse || listButtons.Find(x => Umova(x, 0, 0, whatTeam)).BorderBrush == Brushes.Red)
@@ -200,16 +198,16 @@ namespace GameClient
                         switch (swTemp)
                         {
                             case "22":
-                                TurnAtack(team, button, colorEnemi, Enemi, 1, 1, 2, 2);
+                                TurnAtack( button, colorEnemi,  1, 1, 2, 2);
                                 break;
                             case "2-2":
-                                TurnAtack(team, button, colorEnemi, Enemi, 1, -1, 2, -2);
+                                TurnAtack( button, colorEnemi,  1, -1, 2, -2);
                                 break;
                             case "-22":
-                                TurnAtack(team, button, colorEnemi, Enemi, -1, 1, -2, 2);
+                                TurnAtack( button, colorEnemi,  -1, 1, -2, 2);
                                 break;
                             case "-2-2":
-                                TurnAtack(team, button, colorEnemi, Enemi, -1, -1, -2, -2);
+                                TurnAtack( button, colorEnemi,  -1, -1, -2, -2);
                                 break;
                             default:
                                 break;
@@ -223,14 +221,14 @@ namespace GameClient
                     MessageBox.Show("LOOOSSEERRRR!!!");
                  //   CreateDoska();
                 }
-                else if (Enemi.Count == 0)
+                else if (enemi.Count == 0)
                 {
                     MessageBox.Show("WInnneeerrr!!");
                   //  CreateDoska();
                 }
             }
         }
-        private void TurnAtack(List<Shashka> team, Button button, string colorEnemi, List<Shashka> Enemi, int xEnemi, int yEnemi, int xTurn, int yTurn)
+        private void TurnAtack( Button button, string colorEnemi, int xEnemi, int yEnemi, int xTurn, int yTurn)
         {
 
             if (FindMtBut(xEnemi, yEnemi).Content != null && (FindMtBut(xEnemi, yEnemi).Content as Ellipse).Stroke.ToString() == colorEnemi && button.Content == null)
@@ -240,7 +238,7 @@ namespace GameClient
                 CanselBorder(FindMtBut(0, 0));
 
                 tempEnimyDELET = FindMtBut(xEnemi, yEnemi).Name[1].ToString() + FindMtBut(xEnemi, yEnemi).Name[2].ToString();
-                Enemi.Remove(Enemi.Where(x => x.X == Convert.ToInt32(FindMtBut(xEnemi, yEnemi).Name[1].ToString()) && x.Y == Convert.ToInt32(FindMtBut(xEnemi, yEnemi).Name[2].ToString())).FirstOrDefault());
+                enemi.Remove(enemi.Where(x => x.X == Convert.ToInt32(FindMtBut(xEnemi, yEnemi).Name[1].ToString()) && x.Y == Convert.ToInt32(FindMtBut(xEnemi, yEnemi).Name[2].ToString())).FirstOrDefault());
 
                 obj = team.Where(x => x.X == tempBut.X && x.Y == tempBut.Y).FirstOrDefault();
                 obj.X = Convert.ToInt32(button.Name[1].ToString());
@@ -405,27 +403,27 @@ namespace GameClient
         void EnemiTurn(bool whatteam, int count, int posX, int posY)
         {
             if (whatteam)
-                ShowEnemi(count, posX, posY, tempEnimyBEBlack, tempEnimyAFBlack, teamTwo, teamOne, colorTeamTwo);
+                ShowEnemi(count, posX, posY, tempEnimyBEBlack, tempEnimyAFBlack, colorTeamTwo);
             else
-                ShowEnemi(count, posX, posY, tempEnimyBE, tempEnimyAF, teamOne, teamTwo, colorTeamOne);
+                ShowEnemi(count, posX, posY, tempEnimyBE, tempEnimyAF,  colorTeamOne);
 
-            RefreshXY(teamOne);
-            RefreshXY(teamTwo);
+            RefreshXY(team);
+            RefreshXY(enemi);
         }
-        private void ShowEnemi(int count, int posX, int posY, Shashka shashkaBE, Shashka shashkaAF, List<Shashka> teamEnem, List<Shashka> teamDel, string color)
+        private void ShowEnemi(int count, int posX, int posY, Shashka shashkaBE, Shashka shashkaAF, string color)
         {
             Shashka shashka = new Shashka();
 
             listButtons.Where(j => j.Name == "P" + (shashkaBE.X).ToString() + (shashkaBE.Y).ToString()).FirstOrDefault().Content = null;
             listButtons.Where(j => j.Name == "P" + (shashkaAF.X).ToString() + (shashkaAF.Y).ToString()).FirstOrDefault().Content = new Ellipse() { Stroke = (Brush)brush_convert.ConvertFrom(color) };
-            shashka = teamEnem.Where(x => x.X == shashkaBE.X && x.Y == shashkaBE.Y).FirstOrDefault();
+            shashka = enemi.Where(x => x.X == shashkaBE.X && x.Y == shashkaBE.Y).FirstOrDefault();
             shashka.X = shashkaAF.X;
             shashka.Y = shashkaAF.Y;
             if (count == 7)
             {
                 listButtons.Where(j => j.Name == "P" + posX.ToString() + posY.ToString()).FirstOrDefault().Content = null;
                 listButtons.Where(j => j.Name == "P" + posX.ToString() + posY.ToString()).FirstOrDefault().Tag = "unuse";
-                teamDel.Remove(teamDel.Where(x => x.X == posX && x.Y == posY).FirstOrDefault());
+                team.Remove(team.Where(x => x.X == posX && x.Y == posY).FirstOrDefault());
             }
         }
         #endregion
@@ -439,6 +437,10 @@ namespace GameClient
             SelectTeam.Visibility = Visibility.Hidden;
             brRamka.Visibility = Visibility.Visible;
             Screen.Visibility = Visibility.Visible;
+            
+            team = teamWhite;
+            enemi = teamBlack;
+
         }
         private void Button_Click_black(object sender, RoutedEventArgs e)
         {
@@ -447,6 +449,9 @@ namespace GameClient
             SelectTeam.Visibility = Visibility.Hidden;
             brRamka.Visibility = Visibility.Visible;
             Screen.Visibility = Visibility.Visible;
+          
+            team = teamBlack;
+            enemi = teamWhite;
         }
 
         private void StartClick(object sender, RoutedEventArgs e)
